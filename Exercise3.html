@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lab5 - Fetch User Data</title>
+</head>
+<body>
+    <h2>Fetch User Data</h2>
+    <input type="text" id="textInput" placeholder="Enter a user number..." />
+    <span id="userOutput" style="color: green;"></span>
+
+    <button id="redButton">Red</button>
+    <button id="blueButton">Blue</button>
+    <button id="greenButton">Green</button>
+    <button id="orangeButton">Orange</button>
+    <button id="purpleButton">Purple</button>
+
+    <script type="text/javascript">
+        const inputText = document.getElementById('textInput');
+        const userOutput = document.getElementById("userOutput");
+        const redButton = document.getElementById("redButton");
+        const blueButton = document.getElementById("blueButton");
+        const greenButton = document.getElementById("greenButton");
+        const orangeButton = document.getElementById("orangeButton");
+        const purpleButton = document.getElementById("purpleButton");
+        const API_URL = "https://67c1f93a61d8935867e4ea51.mockapi.io/users_api"; // Replace with actual MockAPI URL
+
+        async function retrieveData(userId) {
+            try {
+                const response = await fetch(`${API_URL}/${userId}`);
+                if (!response.ok) {
+                    userOutput.innerHTML = `User not found.`;
+                    return;
+                }
+
+                const user = await response.json();
+                userOutput.innerHTML = `ID: ${user.id}, Name: ${user.first_name}, Group: ${user.user_group}`;
+            } catch (error) {
+                userOutput.innerHTML = `Error fetching user.`;
+            }
+        }
+
+        inputText.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const userId = inputText.value.trim();
+                inputText.value = "";
+
+                if (userId === "" || isNaN(userId) || userId < 1) {
+                    userOutput.innerHTML = " ";
+                    return;
+                }
+
+                retrieveData(userId);
+            }
+        });
+
+        function changeColor(color) {
+            userOutput.style.color = color;
+        }
+
+        redButton.addEventListener('click', () => changeColor('red'));
+        blueButton.addEventListener('click', () => changeColor('blue'));
+        greenButton.addEventListener('click', () => changeColor('green'));
+        orangeButton.addEventListener('click', () => changeColor('orange'));
+        purpleButton.addEventListener('click', () => changeColor('purple'));
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
