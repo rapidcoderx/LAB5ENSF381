@@ -24,18 +24,28 @@
         const purpleButton = document.getElementById("purpleButton");
         const API_URL = "https://67c1f93a61d8935867e4ea51.mockapi.io/users_api"; // Replace with actual MockAPI URL
 
-        async function retrieveData(userId) {
+        let usersData = []; // Store all users here
+
+        async function fetchAllUsers() {
             try {
-                const response = await fetch(`${API_URL}/${userId}`);
+                const response = await fetch(API_URL);
                 if (!response.ok) {
-                    userOutput.innerHTML = `User not found.`;
+                    userOutput.innerHTML = "Error fetching users.";
                     return;
                 }
-
-                const user = await response.json();
-                userOutput.innerHTML = `ID: ${user.id}, Name: ${user.first_name}, Group: ${user.user_group}`;
+                usersData = await response.json();
+                console.log("All users loaded:", usersData); // Check if data is fetched
             } catch (error) {
-                userOutput.innerHTML = `Error fetching user.`;
+                userOutput.innerHTML = "Error fetching users.";
+            }
+        }
+
+        function displayUser(userId) {
+            const user = usersData.find(u => u.id == userId); // Find user by ID
+            if (user) {
+                userOutput.innerHTML = `ID: ${user.id}, Name: ${user.first_name}, Group: ${user.user_group}`;
+            } else {
+                userOutput.innerHTML = "User not found.";
             }
         }
 
@@ -45,11 +55,11 @@
                 inputText.value = "";
 
                 if (userId === "" || isNaN(userId) || userId < 1) {
-                    userOutput.innerHTML = " ";
+                    userOutput.innerHTML = "Invalid input.";
                     return;
                 }
 
-                retrieveData(userId);
+                displayUser(userId); // Use stored data instead of making another API request
             }
         });
 
@@ -62,9 +72,13 @@
         greenButton.addEventListener('click', () => changeColor('green'));
         orangeButton.addEventListener('click', () => changeColor('orange'));
         purpleButton.addEventListener('click', () => changeColor('purple'));
+
+        // Fetch all users when the page loads
+        fetchAllUsers();
     </script>
 </body>
 </html>
+
 
 
 
